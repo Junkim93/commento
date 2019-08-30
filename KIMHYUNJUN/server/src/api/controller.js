@@ -17,7 +17,7 @@ export const getHome = async (req, res) => {
     user = null;
   }
   const name = user ? user.name : 'Please LOGIN';
-  res.json({ greeting: `Welcome to Chat N Chill`, greeting2: name });
+  res.json({ greeting: `Welcome to Chat N Chill`, name });
 };
 
 export const postRegister = async (req, res) => {

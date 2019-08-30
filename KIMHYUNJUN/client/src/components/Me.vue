@@ -1,11 +1,9 @@
 <template>
-  <div class="bg">
-    <div class="box">
-      <h2>Me</h2>
-      <div>
-        <label>User Info:</label>
-        <pre>{{ user }}</pre>
-      </div>
+  <div class="box">
+    <h2>Me</h2>
+    <div>
+      <label>User Info:</label>
+      <pre>{{ user }}</pre>
     </div>
   </div>
 </template>

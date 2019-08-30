@@ -31,6 +31,17 @@ input:focus {
   outline: 0;
 }
 
+button {
+  border: none;
+  background-color: #f7f7f7;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+
 .bg {
   background-color: #f7f7f7;
   width: 820px;

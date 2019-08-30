@@ -1,13 +1,11 @@
 <template>
-  <div class="bg">
-    <div class="box">
-      <h2>{{ greeting }}</h2>
-      <h3>
-        <p v-if="isAuthenticated" class="box__greeting">{{ greeting2 }}</p>
-        <router-link to="/login" v-else class="box__greeting">{{ greeting2 }}</router-link>
-      </h3>
-      <router-link to="/chat">👉🏻 Join chat room 👈🏻</router-link>
-    </div>
+  <div class="box">
+    <h2>{{ greeting }}</h2>
+    <h3>
+      <p v-if="isAuthenticated" class="box__greeting">{{ greeting2 }}</p>
+      <router-link to="/login" v-else class="box__greeting">{{ greeting2 }}</router-link>
+    </h3>
+    <router-link to="/chat">👉🏻 Start Random Chat 👈🏻</router-link>
   </div>
 </template>
 
@@ -23,6 +21,7 @@ export default {
   },
   data() {
     return {
+      name: "",
       greeting: "",
       greeting2: ""
     };
@@ -33,7 +32,8 @@ export default {
       .then(
         result => (
           (this.greeting = result.data.greeting),
-          (this.greeting2 = result.data.greeting2)
+          (this.greeting2 = result.data.name),
+          (this.name = result.data.name)
         )
       );
   }

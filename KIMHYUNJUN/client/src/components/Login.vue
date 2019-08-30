@@ -1,13 +1,11 @@
 <template>
-  <div class="bg">
-    <div class="box">
-      <h2 class="title">Welcome Bootcamp</h2>
-      <form @submit.prevent="onSubmit(email, password)" class="box__form">
-        <input required type="text" v-model="email" placeholder="Email Address" />
-        <input required type="password" v-model="password" placeholder="Password" />
-        <input type="submit" value="LOGIN" />
-      </form>
-    </div>
+  <div class="box">
+    <h2 class="title">Welcome Bootcamp</h2>
+    <form @submit.prevent="onSubmit(email, password)" class="box__form">
+      <input required type="text" v-model="email" placeholder="Email Address" />
+      <input required type="password" v-model="password" placeholder="Password" />
+      <input type="submit" value="LOGIN" />
+    </form>
   </div>
 </template>
 

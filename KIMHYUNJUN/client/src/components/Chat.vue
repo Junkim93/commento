@@ -1,21 +1,25 @@
 <template>
-  <div class="bg">
-    <div class="box">
-      <header class="box__chat-header">
+  <div class="box__chat">
+    <div class="chat__message">
+      <header class="message-header">
         <p class="connections">{{ connectionsMessage }}</p>
-        <p v-if="typing" class="text-white">{{ typing }} is typing...</p>
+        <p v-if="typing" class="typing-text">{{ typing }} is typing...</p>
+        <p v-if="ending" class="typing-text">{{ ending }}</p>
       </header>
-      <ul class="box__chat-body">
+      <ul v-if="connected" class="message-body">
         <li class="messages" v-for="(msg, index) in messages" :key="index">
-          <span :class="{'float-right':msg.type === 1}">
-            <small class="user">{{ msg.user }}:</small>
-            {{ msg.message }}
-          </span>
+          <div :class="{'user':msg.type === 1}">{{ msg.user }}</div>
+          <span :class="{'float-right':msg.type === 1}">{{ msg.message }}</span>
         </li>
       </ul>
+    </div>
+    <div class="chat__send">
       <form @submit.prevent="sendMessage">
-        <div class="box__message">
+        <div v-if="connected" class="send__message">
           <input type="text" v-model="message" class="box__control" />
+        </div>
+        <div v-else class="start__chat">
+          <button v-on:click="chatStart">{{ guide }}</button>
         </div>
       </form>
     </div>
@@ -30,14 +34,18 @@ import store from "../store/store";
 export default {
   data() {
     return {
-      socket: io("localhost:4000"),
+      socket: io("localhost:4000/chat"),
       user: "",
       message: "",
       messages: [],
       connections: 0,
       connectionsMessage: "",
       typing: false,
-      info: []
+      connected: false,
+      info: [],
+      room: "",
+      guide: "START CHATTING",
+      ending: false
     };
   },
 
@@ -52,13 +60,19 @@ export default {
   },
 
   mounted() {
-    this.socket.on("MESSAGE", data => {
+    this.socket.on("message", data => {
       this.messages = [...this.messages, data];
     });
 
-    this.socket.on("CONNECTIONS", length => {
+    this.socket.on("connections", length => {
       this.connections = length;
       this.isConnectionMessage();
+    });
+
+    this.socket.on("chat start", data => {
+      this.room = data.room;
+      this.connected = true;
+      this.messages = [];
     });
 
     this.socket.on("typing", data => {
@@ -67,6 +81,11 @@ export default {
 
     this.socket.on("stopTyping", () => {
       this.typing = false;
+    });
+
+    this.socket.on("chatEnd", () => {
+      this.ending = true;
+      this.ending = "채팅이 종료되었습니다.";
     });
   },
 
@@ -79,6 +98,11 @@ export default {
   },
 
   methods: {
+    chatStart() {
+      this.socket.emit("randomChat", { username: this.user });
+      this.guide = "WAITING A USER...";
+    },
+
     sendMessage(e) {
       e.preventDefault();
 
@@ -88,7 +112,7 @@ export default {
         type: 1
       });
 
-      this.socket.emit("NEW_MESSAGE", {
+      this.socket.emit("newMessage", {
         user: this.user,
         message: this.message
       });
@@ -111,19 +135,25 @@ export default {
 </script>
 
 <style scoped>
-.box .box__chat-header {
-  color: rgb(133, 129, 129);
+.box__chat {
+  background-color: #f7f7f7;
+  width: 100%;
+  height: 100%;
 }
 
-.box .box__chat-body {
-  position: absolute;
-  top: 30%;
-  width: 87%;
-  font-size: 24px;
+.chat__message {
+  width: 100%;
+  height: 80%;
+  background-color: #f7f7f7;
+  overflow-y: scroll;
 }
 
-.box__chat-body .messages {
-  padding: 5px;
+.chat__send {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  height: 20%;
 }
 
 @keyframes float {
@@ -141,10 +171,10 @@ export default {
   }
 }
 
-.box__message .box__control {
+.send__message .box__control {
   position: relative;
-  bottom: -600px;
   width: 750px;
+  margin-bottom: 30px;
   border-radius: 0;
   border: none;
   font-size: 14px;
@@ -162,20 +192,63 @@ export default {
   animation: float 3s linear infinite forwards;
 }
 
-.float-right {
-  color: rgb(94, 94, 94);
+.start__chat {
+  position: relative;
+  width: 750px;
+  margin-bottom: 400px;
+  border-radius: 0;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.float-right .user {
+.chat__message .message-header {
+  color: rgb(133, 129, 129);
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 35px;
+  position: relative;
+}
+
+.chat__message .message-body {
+  position: sticky;
+  font-size: 20px;
+  width: 100%;
+}
+
+.message-body .messages {
+  padding: 5px 50px 5px 50px;
+  height: auto;
+  overflow: hidden;
+}
+
+.messages span {
+  float: left;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 60%;
+  height: auto;
+  line-height: auto;
+  vertical-align: middle;
+  background-color: rgba(235, 228, 224, 0.952);
+  color: rgb(15, 15, 15);
+}
+.float-right {
+  float: right;
+}
+
+.messages .user {
   display: none;
 }
 
-.text-white {
-  position: absolute;
+.typing-text {
   color: rgb(218, 127, 24);
+  font-size: 15px;
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 20%;
-  font-size: 15px;
+  top: 20px;
 }
 </style>

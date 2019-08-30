@@ -1,7 +1,9 @@
 <template>
   <div>
     <menus></menus>
-    <router-view></router-view>
+    <div class="bg">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 

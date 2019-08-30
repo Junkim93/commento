@@ -1,15 +1,13 @@
 <template>
-  <div class="bg">
-    <div class="box">
-      <h2 class="title">Sign Up</h2>
-      <form @submit.prevent="onSubmit(name, email, password, password2)" class="box__form">
-        <input type="text" v-model="email" placeholder="Email Address" required />
-        <input type="text" v-model="name" placeholder="Nickname for this site" required />
-        <input type="password" v-model="password" placeholder="Password" required />
-        <input type="password" v-model="password2" placeholder="Confirm password" required />
-        <input type="submit" value="JOIN" />
-      </form>
-    </div>
+  <div class="box">
+    <h2 class="title">Sign Up</h2>
+    <form @submit.prevent="onSubmit(name, email, password, password2)" class="box__form">
+      <input type="text" v-model="email" placeholder="Email Address" required />
+      <input type="text" v-model="name" placeholder="Nickname for this site" required />
+      <input type="password" v-model="password" placeholder="Password" required />
+      <input type="password" v-model="password2" placeholder="Confirm password" required />
+      <input type="submit" value="JOIN" />
+    </form>
   </div>
 </template>
 
